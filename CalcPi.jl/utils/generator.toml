@@ -1,0 +1,7 @@
+[general]
+prologue_file_path = "./prologue.jl"
+library_name = "libcalcpi_rs"
+output_file_path = "./../src/C_API.jl"
+module_name = "C_API"
+export_symbol_prefixes = ["calcpi_", "CALCPI_"]
+extract_c_comment_style = "doxygen"
