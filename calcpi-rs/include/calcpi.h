@@ -141,4 +141,4 @@ int32_t calcpi_monte_carlo_pi_reset(struct calcpi_monte_carlo_pi *calc, int32_t 
  */
 void calcpi_monte_carlo_pi_release(struct calcpi_monte_carlo_pi *calc);
 
-#endif /* CALCPI_H */
+#endif  /* CALCPI_H */

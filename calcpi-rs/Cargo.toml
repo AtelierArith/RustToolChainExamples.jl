@@ -11,4 +11,4 @@ crate-type = ["cdylib", "staticlib", "rlib"]
 rand = "0.8"
 
 [build-dependencies]
-cbindgen = "0.26"
+cbindgen = "0.29"
