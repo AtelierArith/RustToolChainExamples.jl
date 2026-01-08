@@ -10,13 +10,6 @@ A Julia package for calling a Rust-implemented Monte Carlo π calculation librar
 
 ```julia
 using Pkg
-Pkg.add(url="path/to/CalcPi.jl")
-```
-
-Or install in development mode:
-
-```julia
-using Pkg
 Pkg.develop(path="path/to/CalcPi.jl")
 ```
 
