@@ -11,17 +11,23 @@ function print_help()
     println()
     println("Options:")
     println("  --calcpi-rs-dir PATH    Specify the calcpi-rs directory path")
+    println("  --output-dir PATH       Specify the output directory for C_API.jl")
     println("  --help, -h              Show this help message")
     println()
     println("Examples:")
     println("  julia generate_C_API.jl --calcpi-rs-dir /path/to/calcpi-rs")
+    println("  julia generate_C_API.jl --output-dir /path/to/output")
     println()
     println("Default: Uses ../deps/calcpi-rs relative to this script")
+    println("         Output goes to ../src/C_API.jl relative to this script")
 end
 
 # Parse command line arguments
 calcpi_rs_dir = nothing
-for (i, arg) in enumerate(ARGS)
+output_dir = nothing
+i = 1
+while i <= length(ARGS)
+    arg = ARGS[i]
     if arg == "--help" || arg == "-h"
         print_help()
         exit(0)
@@ -29,10 +35,22 @@ for (i, arg) in enumerate(ARGS)
         if i + 1 <= length(ARGS)
             global calcpi_rs_dir
             calcpi_rs_dir = ARGS[i + 1]
+            i += 2
         else
             println("Error: --calcpi-rs-dir requires a path argument")
             exit(1)
         end
+    elseif arg == "--output-dir"
+        if i + 1 <= length(ARGS)
+            global output_dir
+            output_dir = ARGS[i + 1]
+            i += 2
+        else
+            println("Error: --output-dir requires a path argument")
+            exit(1)
+        end
+    else
+        i += 1
     end
 end
 
@@ -72,6 +90,16 @@ if isfile(generator_toml)
 else
     println("Warning: generator.toml not found, using default options")
     options = Dict{String,Any}()
+end
+
+# Override output path if specified
+if output_dir !== nothing
+    output_dir = normpath(abspath(output_dir))
+    if !isdir(output_dir)
+        mkpath(output_dir)
+    end
+    options["output_file_path"] = joinpath(output_dir, "C_API.jl")
+    println("Output directory: $output_dir")
 end
 
 # add compiler flags, e.g. "-DXXXXXXXXX"
