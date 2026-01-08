@@ -1,57 +1,57 @@
-# CalcPi.jl 開発ガイド
+# CalcPi.jl Development Guide
 
-このドキュメントは`CalcPi.jl`の開発方法を説明します。
+This document explains how to develop `CalcPi.jl`.
 
-## ディレクトリ構造
+## Directory Structure
 
 ```
 CalcPi.jl/
 ├── deps/
-│   ├── build.jl          # Pkg.build()で実行されるビルドスクリプト
-│   ├── Project.toml      # ビルドスクリプトの依存関係
-│   ├── README.md         # deps/の説明
-│   └── libcalcpi_rs.*    # ビルドされたライブラリ（自動生成）
+│   ├── build.jl          # Build script executed by Pkg.build()
+│   ├── Project.toml      # Dependencies for the build script
+│   ├── README.md         # Description of deps/
+│   └── libcalcpi_rs.*    # Built library (auto-generated)
 ├── utils/
-│   ├── generate_C_API.jl # C-APIバインディング生成スクリプト
-│   ├── generator.toml    # Clang.jl設定
-│   ├── prologue.jl       # 生成コードのプロローグ
-│   └── Project.toml      # Clang.jl依存関係
+│   ├── generate_C_API.jl # C-API binding generation script
+│   ├── generator.toml    # Clang.jl configuration
+│   ├── prologue.jl       # Prologue for generated code
+│   └── Project.toml      # Clang.jl dependencies
 └── src/
-    ├── C_API.jl          # 自動生成されたC-APIバインディング
-    └── CalcPi.jl         # 高レベルAPIラッパー
+    ├── C_API.jl          # Auto-generated C-API bindings
+    └── CalcPi.jl         # High-level API wrapper
 ```
 
-## 開発ワークフロー
+## Development Workflow
 
-### 1. Rustコードの変更
+### 1. Modifying Rust Code
 
-`calcpi-rs`のRustコードを変更した場合：
+When you modify the Rust code in `calcpi-rs`:
 
 ```bash
 cd calcpi-rs
-# Rustコードを編集
+# Edit Rust code
 ```
 
-### 2. Juliaパッケージの再ビルド
+### 2. Rebuilding the Julia Package
 
 ```bash
 cd CalcPi.jl
 julia --project=. deps/build.jl
 ```
 
-または、`Pkg.build()`を使用：
+Alternatively, use `Pkg.build()`:
 
 ```julia
 using Pkg
 Pkg.build("CalcPi")
 ```
 
-これにより：
-- Rustライブラリがビルドされる（`cargo build --release`）
-- `deps/libcalcpi_rs.dylib`（または`.so`/`.dll`）がコピーされる
-- `src/C_API.jl`が再生成される
+This will:
+- Build the Rust library (`cargo build --release`)
+- Copy `deps/libcalcpi_rs.dylib` (or `.so`/`.dll`)
+- Regenerate `src/C_API.jl`
 
-### 3. 動作確認
+### 3. Testing
 
 ```julia
 using CalcPi
@@ -61,87 +61,87 @@ println("π ≈ $result")
 CalcPi.release(calc)
 ```
 
-## ライブラリのロード優先順位
+## Library Loading Priority
 
-`prologue.jl`（`C_API.jl`に含まれる）は、以下の順序でライブラリを探します：
+The `prologue.jl` (included in `C_API.jl`) searches for the library in the following order:
 
-1. **`deps/libcalcpi_rs.*`** （最高優先度）
-   - `Pkg.build()`でコピーされたローカルビルド
-   - 開発時に使用
+1. **`deps/libcalcpi_rs.*`** (highest priority)
+   - Local build copied by `Pkg.build()`
+   - Used during development
 
 2. **`calcpi-rs/target/release/libcalcpi_rs.*`**
-   - 直接ビルドされたライブラリ
-   - `deps/`にない場合のフォールバック
+   - Directly built library
+   - Fallback when not in `deps/`
 
-3. **システムライブラリ**
+3. **System library**
    - `Libdl.find_library(["libcalcpi_rs"])`
-   - システムパスから検索
+   - Searched from system paths
 
-## トラブルシューティング
+## Troubleshooting
 
-### エラー: CEnum not found
+### Error: CEnum not found
 
-生成された`C_API.jl`に`using CEnum`が含まれている場合、`build.jl`の後処理で削除されます。手動で削除する場合：
+If the generated `C_API.jl` contains `using CEnum`, it will be removed by post-processing in `build.jl`. To remove it manually:
 
 ```julia
-# src/C_API.jl から以下の行を削除
+# Remove the following line from src/C_API.jl
 using CEnum: CEnum, @cenum
 ```
 
-### エラー: libcalcpi_rs not found
+### Error: libcalcpi_rs not found
 
-ライブラリが見つからない場合：
+If the library is not found:
 
 ```bash
-# 1. Rustライブラリをビルド
+# 1. Build the Rust library
 cd calcpi-rs
 cargo build --release
 
-# 2. Juliaパッケージを再ビルド
+# 2. Rebuild the Julia package
 cd ../CalcPi.jl
 julia --project=. deps/build.jl
 ```
 
-### クリーンビルド
+### Clean Build
 
-完全にクリーンな状態から再ビルドする場合：
+To rebuild from a completely clean state:
 
 ```bash
-# 1. deps/をクリア
+# 1. Clear deps/
 rm -rf CalcPi.jl/deps/libcalcpi_rs.*
 
-# 2. Rustプロジェクトをクリーンビルド
+# 2. Clean build the Rust project
 cd calcpi-rs
 cargo clean
 cargo build --release
 
-# 3. Juliaパッケージを再ビルド
+# 3. Rebuild the Julia package
 cd ../CalcPi.jl
 julia --project=. deps/build.jl
 ```
 
-## 自動生成の仕組み
+## Auto-generation Mechanism
 
-### C-APIバインディング生成
+### C-API Binding Generation
 
-`utils/generate_C_API.jl`が`calcpi.h`からJuliaバインディングを自動生成します：
+`utils/generate_C_API.jl` automatically generates Julia bindings from `calcpi.h`:
 
-1. Clang.jlでCヘッダーをパース
-2. Juliaコードを生成
-3. `prologue.jl`を先頭に挿入
-4. `src/C_API.jl`に出力
+1. Parse C header with Clang.jl
+2. Generate Julia code
+3. Insert `prologue.jl` at the beginning
+4. Output to `src/C_API.jl`
 
-### ビルドスクリプト
+### Build Script
 
-`deps/build.jl`は以下の処理を実行：
+`deps/build.jl` performs the following:
 
-1. `calcpi-rs`ディレクトリの検出
-2. Rustライブラリのビルド
-3. ライブラリを`deps/`にコピー
-4. C-APIバインディングの生成
-5. 後処理（`CEnum`の削除など）
+1. Detect `calcpi-rs` directory
+2. Build Rust library
+3. Copy library to `deps/`
+4. Generate C-API bindings
+5. Post-processing (e.g., remove `CEnum`)
 
-## 参考
+## References
 
-- `SparseIR.jl/deps/` - 参考実装
-- `SparseIR.jl/utils/` - C-API生成の参考実装
+- `SparseIR.jl/deps/` - Reference implementation
+- `SparseIR.jl/utils/` - Reference implementation for C-API generation

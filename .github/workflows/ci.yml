@@ -1,0 +1,224 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-cargo-example:
+    name: Test cargo_example on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        julia-version: ['1.10', '1.11', '1.12']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia-version }}
+
+      - name: Cache Julia packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.julia
+          key: ${{ runner.os }}-julia-${{ matrix.julia-version }}-cargo-example-${{ hashFiles('cargo_example/Project.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-julia-${{ matrix.julia-version }}-cargo-example-
+
+      - name: Test cargo_example
+        working-directory: cargo_example
+        run: |
+          julia --project=. -e 'using Pkg; Pkg.instantiate()'
+          julia --project=. run.jl
+
+  test-rustc-example:
+    name: Test rustc_example on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        julia-version: ['1.10', '1.11', '1.12']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia-version }}
+
+      - name: Cache Julia packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.julia
+          key: ${{ runner.os }}-julia-${{ matrix.julia-version }}-rustc-example-${{ hashFiles('rustc_example/Project.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-julia-${{ matrix.julia-version }}-rustc-example-
+
+      - name: Test rustc_example
+        working-directory: rustc_example
+        run: |
+          julia --project=. -e 'using Pkg; Pkg.instantiate()'
+          julia --project=. main.jl
+
+  test-calcpi-rs:
+    name: Test calcpi-rs on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            calcpi-rs/target/
+          key: ${{ runner.os }}-cargo-calcpi-rs-${{ hashFiles('calcpi-rs/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-calcpi-rs-
+
+      - name: Build calcpi-rs
+        working-directory: calcpi-rs
+        run: cargo build --release
+
+      - name: Test calcpi-rs
+        working-directory: calcpi-rs
+        run: cargo test --release
+
+      - name: Check generated header
+        working-directory: calcpi-rs
+        shell: bash
+        run: |
+          test -f include/calcpi.h || (echo "Header file not generated" && exit 1)
+          grep -q "calcpi_monte_carlo_pi_new" include/calcpi.h || (echo "Header file missing expected function" && exit 1)
+
+  test-calcpi-jl:
+    name: Test CalcPi.jl on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        julia-version: ['1.10', '1.11', '1.12']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia-version }}
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Cache Julia packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.julia
+          key: ${{ runner.os }}-julia-${{ matrix.julia-version }}-calcpi-jl-${{ hashFiles('CalcPi.jl/Project.toml', 'CalcPi.jl/deps/Project.toml', 'CalcPi.jl/utils/Project.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-julia-${{ matrix.julia-version }}-calcpi-jl-
+
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            calcpi-rs/target/
+          key: ${{ runner.os }}-cargo-calcpi-rs-${{ hashFiles('calcpi-rs/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-calcpi-rs-
+
+      - name: Build calcpi-rs (for CalcPi.jl)
+        working-directory: calcpi-rs
+        run: cargo build --release
+
+      - name: Build CalcPi.jl
+        working-directory: CalcPi.jl
+        run: |
+          julia --project=. -e 'using Pkg; Pkg.instantiate()'
+          julia --project=deps -e 'using Pkg; Pkg.instantiate()'
+          julia --project=deps deps/build.jl
+
+      - name: Test CalcPi.jl
+        working-directory: CalcPi.jl
+        run: |
+          julia --project=. -e 'using Pkg; Pkg.test("CalcPi")'
+
+  test-integration:
+    name: Integration Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        julia-version: ['1.12']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia-version }}
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Test full workflow
+        shell: bash
+        run: |
+          # Test cargo_example
+          cd cargo_example
+          julia --project=. -e 'using Pkg; Pkg.instantiate()'
+          julia --project=. run.jl
+          cd ..
+
+          # Test rustc_example
+          cd rustc_example
+          julia --project=. -e 'using Pkg; Pkg.instantiate()'
+          julia --project=. main.jl
+          cd ..
+
+          # Build and test calcpi-rs
+          cd calcpi-rs
+          cargo build --release
+          cargo test --release
+          cd ..
+
+          # Build and test CalcPi.jl
+          cd CalcPi.jl
+          julia --project=. -e 'using Pkg; Pkg.instantiate()'
+          julia --project=deps -e 'using Pkg; Pkg.instantiate()'
+          julia --project=deps deps/build.jl
+          julia --project=. -e 'using Pkg; Pkg.test("CalcPi")'
+          cd ..
