@@ -10,10 +10,10 @@ function get_libcalcpi_rs()
         return local_libcalcpi_path
     end
 
-    # Second, try to find local build in calcpi-rs/target/release or debug
+    # Second, try to find local build in deps/calcpi-rs/target/release or debug
     # On Windows, Rust produces calcpi_rs.dll (no lib prefix)
     # On Unix, Rust produces libcalcpi_rs.so or libcalcpi_rs.dylib (with lib prefix)
-    calcpi_rs_dir = joinpath(dirname(@__DIR__), "..", "calcpi-rs")
+    calcpi_rs_dir = joinpath(dirname(@__DIR__), "deps", "calcpi-rs")
     possible_paths = [
         joinpath(calcpi_rs_dir, "target", "release", "libcalcpi_rs.$(Libdl.dlext)"),
         joinpath(calcpi_rs_dir, "target", "release", "calcpi_rs.$(Libdl.dlext)"),
