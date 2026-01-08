@@ -1,5 +1,3 @@
-__precompile__(false)
-
 module CalcPi
 
 include("C_API.jl")
