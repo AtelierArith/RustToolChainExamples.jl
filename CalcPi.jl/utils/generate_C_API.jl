@@ -16,7 +16,7 @@ function print_help()
     println("Examples:")
     println("  julia generate_C_API.jl --calcpi-rs-dir /path/to/calcpi-rs")
     println()
-    println("Default: Uses ../../calcpi-rs relative to this script")
+    println("Default: Uses ../deps/calcpi-rs relative to this script")
 end
 
 # Parse command line arguments
@@ -38,8 +38,8 @@ end
 
 # Get calcpi-rs directory from command line or use default
 if calcpi_rs_dir === nothing
-    # Default path
-    calcpi_rs_dir = normpath(joinpath(@__DIR__, "../../calcpi-rs"))
+    # Default path (calcpi-rs is now in CalcPi.jl/deps/calcpi-rs)
+    calcpi_rs_dir = normpath(joinpath(@__DIR__, "../deps/calcpi-rs"))
 else
     # Convert to absolute path
     calcpi_rs_dir = normpath(abspath(calcpi_rs_dir))

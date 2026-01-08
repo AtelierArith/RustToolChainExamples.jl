@@ -2,7 +2,7 @@ using Pkg
 using Libdl: dlext
 using RustToolChain: cargo
 
-const DEV_DIR::String = joinpath(dirname(dirname(@__DIR__)), "calcpi-rs")
+const DEV_DIR::String = joinpath(@__DIR__, "calcpi-rs")
 
 # Check if the calcpi-rs directory exists locally; if not, do nothing.
 # If it exists, build the Rust project and copy libcalcpi_rs.<ext> to deps/.

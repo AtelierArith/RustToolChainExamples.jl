@@ -6,8 +6,8 @@ This repository is a collection of sample projects demonstrating how to call Rus
 
 ### Main Projects
 
-- **`calcpi-rs/`** - Rust library implementing π calculation using the Monte Carlo method
-- **`CalcPi.jl/`** - Julia package for calling `calcpi-rs` from Julia
+- **`CalcPi.jl/`** - Julia package for calling Rust-implemented Monte Carlo π calculation library
+  - **`CalcPi.jl/deps/calcpi-rs/`** - Rust library implementing π calculation using the Monte Carlo method (embedded in CalcPi.jl)
 
 ### Sample Projects
 
