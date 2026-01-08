@@ -93,21 +93,21 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            calcpi-rs/target/
-          key: ${{ runner.os }}-cargo-calcpi-rs-${{ hashFiles('calcpi-rs/Cargo.lock') }}
+            CalcPi.jl/deps/calcpi-rs/target/
+          key: ${{ runner.os }}-cargo-calcpi-rs-${{ hashFiles('CalcPi.jl/deps/calcpi-rs/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-calcpi-rs-
 
       - name: Build calcpi-rs
-        working-directory: calcpi-rs
+        working-directory: CalcPi.jl/deps/calcpi-rs
         run: cargo build --release
 
       - name: Test calcpi-rs
-        working-directory: calcpi-rs
+        working-directory: CalcPi.jl/deps/calcpi-rs
         run: cargo test --release
 
       - name: Check generated header
-        working-directory: calcpi-rs
+        working-directory: CalcPi.jl/deps/calcpi-rs
         shell: bash
         run: |
           test -f include/calcpi.h || (echo "Header file not generated" && exit 1)
@@ -151,13 +151,13 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            calcpi-rs/target/
-          key: ${{ runner.os }}-cargo-calcpi-rs-${{ hashFiles('calcpi-rs/Cargo.lock') }}
+            CalcPi.jl/deps/calcpi-rs/target/
+          key: ${{ runner.os }}-cargo-calcpi-rs-${{ hashFiles('CalcPi.jl/deps/calcpi-rs/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-calcpi-rs-
 
       - name: Build calcpi-rs (for CalcPi.jl)
-        working-directory: calcpi-rs
+        working-directory: CalcPi.jl/deps/calcpi-rs
         run: cargo build --release
 
       - name: Build CalcPi.jl
@@ -210,10 +210,10 @@ jobs:
           cd ..
 
           # Build and test calcpi-rs
-          cd calcpi-rs
+          cd CalcPi.jl/deps/calcpi-rs
           cargo build --release
           cargo test --release
-          cd ..
+          cd ../../..
 
           # Build and test CalcPi.jl
           cd CalcPi.jl
