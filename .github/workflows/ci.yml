@@ -25,7 +25,7 @@ jobs:
           version: ${{ matrix.julia-version }}
 
       - name: Cache Julia packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.julia
           key: ${{ runner.os }}-julia-${{ matrix.julia-version }}-cargo-example-${{ hashFiles('cargo_example/Project.toml') }}
@@ -56,7 +56,7 @@ jobs:
           version: ${{ matrix.julia-version }}
 
       - name: Cache Julia packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.julia
           key: ${{ runner.os }}-julia-${{ matrix.julia-version }}-rustc-example-${{ hashFiles('rustc_example/Project.toml') }}
@@ -86,7 +86,7 @@ jobs:
           toolchain: stable
 
       - name: Cache Cargo registry
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/bin/
@@ -136,7 +136,7 @@ jobs:
           toolchain: stable
 
       - name: Cache Julia packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.julia
           key: ${{ runner.os }}-julia-${{ matrix.julia-version }}-calcpi-jl-${{ hashFiles('CalcPi.jl/Project.toml', 'CalcPi.jl/deps/Project.toml', 'CalcPi.jl/utils/Project.toml') }}
@@ -144,7 +144,7 @@ jobs:
             ${{ runner.os }}-julia-${{ matrix.julia-version }}-calcpi-jl-
 
       - name: Cache Cargo registry
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/bin/
