@@ -16,7 +16,7 @@ export calcpi_monte_carlo_pi_reset
 """
     MonteCarloPi
 
-モンテカルロ法でπを計算する計算機の高レベルAPIラッパーです。
+High-level API wrapper for a calculator that computes π using the Monte Carlo method.
 """
 mutable struct MonteCarloPi
     ptr::Ptr{calcpi_monte_carlo_pi}
@@ -38,7 +38,7 @@ end
 """
     release(calc::MonteCarloPi)
 
-計算機のリソースを解放します。通常は自動的に呼ばれますが、明示的に呼ぶこともできます。
+Releases the calculator's resources. Usually called automatically, but can be called explicitly.
 """
 function release(calc::MonteCarloPi)
     if calc.ptr != C_NULL
@@ -50,7 +50,7 @@ end
 """
     calculate(calc::MonteCarloPi, samples::UInt64) -> Float64
 
-指定された数のサンプルを生成してπを推定します。
+Generates the specified number of samples and estimates π.
 """
 function calculate(calc::MonteCarloPi, samples::UInt64)
     if calc.ptr == C_NULL
@@ -72,7 +72,7 @@ end
 """
     estimate(calc::MonteCarloPi) -> Float64
 
-現在のサンプルからπの推定値を取得します。
+Gets the π estimate from the current samples.
 """
 function estimate(calc::MonteCarloPi)
     if calc.ptr == C_NULL
@@ -94,7 +94,7 @@ end
 """
     total_samples(calc::MonteCarloPi) -> UInt64
 
-総サンプル数を取得します。
+Gets the total number of samples.
 """
 function total_samples(calc::MonteCarloPi)
     if calc.ptr == C_NULL
@@ -116,7 +116,7 @@ end
 """
     inside_circle(calc::MonteCarloPi) -> UInt64
 
-円内の点数を取得します。
+Gets the number of points inside the circle.
 """
 function inside_circle(calc::MonteCarloPi)
     if calc.ptr == C_NULL
@@ -138,7 +138,7 @@ end
 """
     reset(calc::MonteCarloPi)
 
-統計情報をリセットします。
+Resets the statistics.
 """
 function reset(calc::MonteCarloPi)
     if calc.ptr == C_NULL
@@ -157,7 +157,7 @@ end
 """
     calc_pi(samples::UInt64) -> Float64
 
-簡易的なπ計算関数。内部でMonteCarloPiを作成・使用・解放します。
+Simple π calculation function. Internally creates, uses, and releases a MonteCarloPi instance.
 """
 function calc_pi(samples::UInt64)
     calc = MonteCarloPi()

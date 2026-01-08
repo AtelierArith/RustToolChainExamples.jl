@@ -1,50 +1,50 @@
 # rustc_example
 
-rustcを直接使用してRustコードをコンパイルし、Juliaから実行する例です。
+An example of compiling Rust code using rustc directly and running it from Julia.
 
-## 概要
+## Overview
 
-このサンプルは、Cargoを使わずにrustcを直接使用してRustコードをコンパイル・実行する方法を示します。シンプルな単一ファイルのRustプログラムに適しています。
+This sample demonstrates how to compile and run Rust code using rustc directly without Cargo. Suitable for simple single-file Rust programs.
 
-## プロジェクト構造
+## Project Structure
 
 ```
 rustc_example/
-├── main.rs      # Rustのソースコード
-├── main.jl      # Juliaの実行スクリプト
-└── Project.toml # Juliaプロジェクトの設定
+├── main.rs      # Rust source code
+├── main.jl      # Julia execution script
+└── Project.toml # Julia project configuration
 ```
 
-## 使い方
+## Usage
 
-### 実行
+### Running
 
 ```bash
 julia main.jl
 ```
 
-または、Julia REPLから：
+Or from the Julia REPL:
 
 ```julia
 include("main.jl")
 ```
 
-## 動作の仕組み
+## How It Works
 
-1. `RustToolChain.jl`の`rustc()`関数を使用してrustcコマンドを取得
-2. `rustc main.rs`でRustコードをコンパイル（`main`という実行ファイルが生成される）
-3. コンパイルされたバイナリ（`./main`）を実行
+1. Uses the `rustc()` function from `RustToolChain.jl` to get the rustc command
+2. Compiles the Rust code with `rustc main.rs` (generates an executable named `main`)
+3. Executes the compiled binary (`./main`)
 
-## Cargoとの違い
+## Differences from Cargo
 
-- **rustc**: 単一ファイルのコンパイルに適している。依存関係管理なし。
-- **Cargo**: プロジェクト管理、依存関係管理、ビルドシステムを含む。
+- **rustc**: Suitable for compiling single files. No dependency management.
+- **Cargo**: Includes project management, dependency management, and build system.
 
-## 依存関係
+## Dependencies
 
-- `RustToolChain.jl` - Rust toolchainの管理
+- `RustToolChain.jl` - Rust toolchain management
 
-## 関連プロジェクト
+## Related Projects
 
-- `cargo_example/` - Cargoを使用する例
-- `calcpi-rs/` - より複雑なライブラリプロジェクトの例
+- `cargo_example/` - Example using Cargo
+- `calcpi-rs/` - Example of a more complex library project

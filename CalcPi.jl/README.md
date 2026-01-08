@@ -1,80 +1,80 @@
 # CalcPi.jl
 
-JuliaからRustで実装されたMonte Carlo法によるπ計算ライブラリ（`calcpi-rs`）を呼び出すためのJuliaパッケージです。
+A Julia package for calling a Rust-implemented Monte Carlo π calculation library (`calcpi-rs`) from Julia.
 
-## 概要
+## Overview
 
-`CalcPi.jl`は、`calcpi-rs`ライブラリへのJuliaバインディングを提供します。Monte Carlo法を使用してπの値を計算できます。
+`CalcPi.jl` provides Julia bindings to the `calcpi-rs` library. You can calculate the value of π using the Monte Carlo method.
 
-## インストール
+## Installation
 
 ```julia
 using Pkg
 Pkg.add(url="path/to/CalcPi.jl")
 ```
 
-または、開発モードでインストール：
+Or install in development mode:
 
 ```julia
 using Pkg
 Pkg.develop(path="path/to/CalcPi.jl")
 ```
 
-## ビルド
+## Building
 
-パッケージをビルドすると、Rustライブラリが自動的にコンパイルされ、C APIバインディングが生成されます：
+Building the package will automatically compile the Rust library and generate C API bindings:
 
 ```julia
 using Pkg
 Pkg.build("CalcPi")
 ```
 
-## 使い方
+## Usage
 
 ```julia
 using CalcPi
 
-# MonteCarloPiインスタンスを作成
+# Create a MonteCarloPi instance
 calc = CalcPi.MonteCarloPi()
 
-# 100万サンプルでπを計算
+# Calculate π with 1 million samples
 result = CalcPi.calculate(calc, UInt64(1_000_000))
 println("π ≈ $result")
 
-# リソースを解放
+# Release resources
 CalcPi.release(calc)
 ```
 
-## プロジェクト構造
+## Project Structure
 
 ```
 CalcPi.jl/
 ├── deps/
-│   ├── build.jl          # ビルドスクリプト
-│   └── libcalcpi_rs.*    # ビルドされたライブラリ（自動生成）
+│   ├── build.jl          # Build script
+│   └── libcalcpi_rs.*    # Built library (auto-generated)
 ├── src/
-│   ├── CalcPi.jl         # 高レベルAPI
-│   └── C_API.jl           # C APIバインディング（自動生成）
-├── test/                  # テストファイル
-└── utils/                 # C API生成ユーティリティ
+│   ├── CalcPi.jl         # High-level API
+│   └── C_API.jl           # C API bindings (auto-generated)
+├── test/                  # Test files
+└── utils/                 # C API generation utilities
 ```
 
-## 開発
+## Development
 
-開発ガイドについては`DEVELOPMENT.md`を参照してください。
+For development guide, see `DEVELOPMENT.md`.
 
-## テスト
+## Testing
 
 ```julia
 using Pkg
 Pkg.test("CalcPi")
 ```
 
-## 依存関係
+## Dependencies
 
-- `CEnum.jl` - C enumのサポート
-- `RustToolChain.jl` - Rust toolchainの管理（ビルド時のみ）
+- `CEnum.jl` - C enum support
+- `RustToolChain.jl` - Rust toolchain management (build-time only)
 
-## ライセンス
+## License
 
-このプロジェクトのライセンス情報については、ルートディレクトリのREADMEを参照してください。
+For license information about this project, please refer to the README in the root directory.

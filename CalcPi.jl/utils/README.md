@@ -1,65 +1,63 @@
-# CalcPi.jl C-API 自動生成ツール
+# CalcPi.jl C-API Auto-generation Tool
 
-このディレクトリには、CヘッダーファイルからJuliaバインディングを自動生成するツールが含まれています。
+This directory contains tools for automatically generating Julia bindings from C header files.
 
-## 概要
+## Overview
 
-`SparseIR.jl/utils`の仕組みを参考に、`calcpi.h`からJuliaの`C_API.jl`を自動生成します。
+Based on the mechanism from `SparseIR.jl/utils`, this tool automatically generates Julia's `C_API.jl` from `calcpi.h`.
 
-## ファイル構成
+## File Structure
 
-- `generate_C_API.jl` - メインの生成スクリプト
-- `generator.toml` - Clang.jlの設定ファイル
-- `prologue.jl` - 生成コードのプロローグ（ライブラリロード処理）
-- `Project.toml` - 依存関係（Clang.jl）
+- `generate_C_API.jl` - Main generation script
+- `generator.toml` - Clang.jl configuration file
+- `prologue.jl` - Prologue for generated code (library loading process)
+- `Project.toml` - Dependencies (Clang.jl)
 
-## 使用方法
+## Usage
 
-### 1. Rustライブラリのビルド
+### 1. Building the Rust Library
 
-まず、Rustライブラリをビルドしてヘッダーファイルを生成します：
+First, build the Rust library to generate the header file:
 
 ```bash
 cd ../../calcpi-rs
 cargo build --release
 ```
 
-これにより、`calcpi-rs/include/calcpi.h`が生成されます。
+This generates `calcpi-rs/include/calcpi.h`.
 
-### 2. Juliaバインディングの生成
+### 2. Generating Julia Bindings
 
-生成スクリプトを実行します：
+Run the generation script:
 
 ```bash
 cd CalcPi.jl/utils
 julia generate_C_API.jl
 ```
 
-デフォルトでは、`../../calcpi-rs`を探します。別のパスを指定する場合：
+By default, it looks for `../../calcpi-rs`. To specify a different path:
 
 ```bash
 julia generate_C_API.jl --calcpi-rs-dir /path/to/calcpi-rs
 ```
 
-### 3. 生成されるファイル
+### 3. Generated Files
 
-`CalcPi.jl/src/C_API.jl`が生成されます。このファイルには：
+`CalcPi.jl/src/C_API.jl` is generated. This file contains:
 
-- 型定義（`calcpi_monte_carlo_pi`など）
-- 定数定義（`CALCPI_SUCCESS`など）
-- C関数のラッパー（`calcpi_monte_carlo_pi_new`など）
+- Type definitions (e.g., `calcpi_monte_carlo_pi`)
+- Constant definitions (e.g., `CALCPI_SUCCESS`)
+- C function wrappers (e.g., `calcpi_monte_carlo_pi_new`)
 
-が含まれます。
+## Generation Script Behavior
 
-## 生成スクリプトの動作
+1. **Command-line argument parsing**: Path can be specified with `--calcpi-rs-dir`
+2. **Directory validation**: Checks for the existence of `calcpi-rs/include/calcpi.h`
+3. **Parsing with Clang.jl**: Parses the C header
+4. **Julia code generation**: Generates `C_API.jl`
+5. **Prologue insertion**: Adds the contents of `prologue.jl` at the beginning
 
-1. **コマンドライン引数の解析**: `--calcpi-rs-dir`でパスを指定可能
-2. **ディレクトリの検証**: `calcpi-rs/include/calcpi.h`の存在確認
-3. **Clang.jlによるパース**: Cヘッダーを解析
-4. **Juliaコードの生成**: `C_API.jl`を生成
-5. **プロローグの挿入**: `prologue.jl`の内容を先頭に追加
-
-## 設定のカスタマイズ
+## Configuration Customization
 
 ### generator.toml
 
@@ -75,33 +73,31 @@ extract_c_comment_style = "doxygen"
 
 ### prologue.jl
 
-ライブラリのロード処理を定義します。ローカルビルドを優先し、なければシステムライブラリを探します。
+Defines the library loading process. It prioritizes local builds and falls back to system libraries if not found.
 
-## トラブルシューティング
+## Troubleshooting
 
-### エラー: calcpi.h not found
+### Error: calcpi.h not found
 
-Rustライブラリをビルドしてください：
+Build the Rust library:
 
 ```bash
 cd calcpi-rs && cargo build --release
 ```
 
-### エラー: CEnum not found
+### Error: CEnum not found
 
-生成された`C_API.jl`で`CEnum`が使われていない場合は、`using CEnum`の行を削除してください。
+If `CEnum` is not used in the generated `C_API.jl`, remove the `using CEnum` line.
 
-### 生成コードの修正
+### Modifying Generated Code
 
-生成されたコードは自動生成なので、直接編集せずに：
+Since the generated code is auto-generated, do not edit it directly. Instead:
 
-1. Cヘッダーを修正して再生成
-2. `prologue.jl`を修正して再生成
-3. `generator.toml`の設定を変更して再生成
+1. Modify the C header and regenerate
+2. Modify `prologue.jl` and regenerate
+3. Change the settings in `generator.toml` and regenerate
 
-してください。
+## References
 
-## 参考
-
-- `SparseIR.jl/utils/generate_C_API.jl` - 参考実装
+- `SparseIR.jl/utils/generate_C_API.jl` - Reference implementation
 - [Clang.jl Documentation](https://github.com/JuliaInterop/Clang.jl)

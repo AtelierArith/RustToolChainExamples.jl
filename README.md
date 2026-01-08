@@ -1,38 +1,38 @@
 # RustToolChainExamples.jl
 
-このリポジトリは、JuliaからRustコードを呼び出す方法を示すサンプルプロジェクトのコレクションです。
+This repository is a collection of sample projects demonstrating how to call Rust code from Julia.
 
-## プロジェクト構成
+## Project Structure
 
-### メインプロジェクト
+### Main Projects
 
-- **`calcpi-rs/`** - Rustで実装されたMonte Carlo法によるπ計算ライブラリ
-- **`CalcPi.jl/`** - `calcpi-rs`をJuliaから呼び出すためのJuliaパッケージ
+- **`calcpi-rs/`** - Rust library implementing π calculation using the Monte Carlo method
+- **`CalcPi.jl/`** - Julia package for calling `calcpi-rs` from Julia
 
-### サンプルプロジェクト
+### Sample Projects
 
-- **`cargo_example/`** - Cargoを使ったRustプロジェクトの例
-- **`rustc_example/`** - rustcを直接使ったRustプロジェクトの例
+- **`cargo_example/`** - Example of a Rust project using Cargo
+- **`rustc_example/`** - Example of a Rust project using rustc directly
 
-## セットアップ
+## Setup
 
-### 前提条件
+### Prerequisites
 
-- Julia 1.6以上
+- Julia 1.10 or later
 - Rust toolchain (rustc, cargo)
-- [RustToolChain.jl](https://github.com/AtelierArith/RustToolChain.jl) パッケージ
+- [RustToolChain.jl](https://github.com/AtelierArith/RustToolChain.jl) package
 
-### インストール
+### Installation
 
 ```julia
 using Pkg
 Pkg.add("RustToolChain")
 ```
 
-## 使い方
+## Usage
 
-各サンプルプロジェクトのREADMEを参照してください。
+Please refer to the README of each sample project.
 
-## ライセンス
+## License
 
-このプロジェクトのライセンス情報については、各サブディレクトリのREADMEを参照してください。
+For license information about this project, please refer to the README in each subdirectory.
