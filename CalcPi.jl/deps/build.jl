@@ -10,7 +10,18 @@ if isdir(DEV_DIR)
     cd(DEV_DIR) do
         run(`$(cargo()) build --release`)
     end
-    libcalcpi_path = joinpath(DEV_DIR, "target", "release", "libcalcpi_rs.$(dlext)")
+    # On Windows, Rust produces calcpi_rs.dll (no lib prefix)
+    # On Unix, Rust produces libcalcpi_rs.so or libcalcpi_rs.dylib (with lib prefix)
+    release_dir = joinpath(DEV_DIR, "target", "release")
+    libcalcpi_path = joinpath(release_dir, "libcalcpi_rs.$(dlext)")
+    if !isfile(libcalcpi_path)
+        # Try without lib prefix (Windows)
+        libcalcpi_path = joinpath(release_dir, "calcpi_rs.$(dlext)")
+    end
+    if !isfile(libcalcpi_path)
+        error("Could not find built library. Expected libcalcpi_rs.$(dlext) or calcpi_rs.$(dlext) in $release_dir")
+    end
+    # Always copy to libcalcpi_rs.<ext> in deps/ for consistency
     cp(libcalcpi_path, joinpath(@__DIR__, "libcalcpi_rs.$(dlext)"); force=true)
 
     cd(joinpath(dirname(@__DIR__), "utils")) do
