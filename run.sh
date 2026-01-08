@@ -1,1 +1,0 @@
-julia -e 'using Pkg; Pkg.activate(temp=true); Pkg.add(url="git@github.com:AtelierArith/RustToolChainExamples.jl.git", subdir="CalcPi.jl"); Pkg.test("CalcPi")'
