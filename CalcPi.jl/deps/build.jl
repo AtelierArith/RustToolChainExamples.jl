@@ -8,7 +8,9 @@ const DEV_DIR::String = joinpath(@__DIR__, "calcpi-rs")
 # If it exists, build the Rust project and copy libcalcpi_rs.<ext> to deps/.
 if isdir(DEV_DIR)
     cd(DEV_DIR) do
+        @info "Building Rust project. The first build may take a while to download Rust environment."
         run(`$(cargo()) build --release`)
+        @info "Rust project built"
     end
     # On Windows, Rust produces calcpi_rs.dll (no lib prefix)
     # On Unix, Rust produces libcalcpi_rs.so or libcalcpi_rs.dylib (with lib prefix)
