@@ -24,16 +24,37 @@ if isdir(DEV_DIR)
     # Always copy to libcalcpi_rs.<ext> in deps/ for consistency
     cp(libcalcpi_path, joinpath(@__DIR__, "libcalcpi_rs.$(dlext)"); force=true)
 
-    cd(joinpath(dirname(@__DIR__), "utils")) do
-        run(`$(Base.julia_cmd()) --project generate_C_API.jl`)
+    # Generate C_API.jl in a temporary directory first, then copy to the appropriate location
+    # This handles the case where the package is installed and src/ is read-only
+    package_dir = dirname(@__DIR__)
+    src_dir = joinpath(package_dir, "src")
+    temp_output_dir = mktempdir()
+
+    cd(joinpath(package_dir, "utils")) do
+        run(`$(Base.julia_cmd()) --project generate_C_API.jl --output-dir $temp_output_dir`)
     end
 
-    # Remove CEnum import if not needed (post-processing)
-    c_api_path = joinpath(dirname(@__DIR__), "src", "C_API.jl")
-    if isfile(c_api_path)
-        content = read(c_api_path, String)
-        # Remove CEnum import if present
-        content = replace(content, r"using CEnum: CEnum, @cenum\n\n" => "")
-        write(c_api_path, content)
+    # Copy generated file to src/ if writable
+    temp_c_api_path = joinpath(temp_output_dir, "C_API.jl")
+    if isfile(temp_c_api_path)
+        c_api_path = joinpath(src_dir, "C_API.jl")
+        # Check if src/ is writable by testing write access
+        try
+            content = read(temp_c_api_path, String)
+            # Remove CEnum import if not needed (post-processing)
+            content = replace(content, r"using CEnum: CEnum, @cenum\n\n" => "")
+            # Try to write to src/
+            open(c_api_path, "w") do f
+                write(f, content)
+            end
+            println("Generated C_API.jl in src/")
+        catch e
+            # If src/ is read-only (e.g., installed package), skip writing
+            # The existing C_API.jl in the package should be used
+            println("Warning: Cannot write to src/ (package may be installed). Using existing C_API.jl.")
+        end
+        rm(temp_output_dir; recursive=true)
+    else
+        error("Failed to generate C_API.jl")
     end
 end
