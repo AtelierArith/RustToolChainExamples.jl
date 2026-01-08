@@ -101,7 +101,10 @@ function main()
         if !isdir(output_dir)
             mkpath(output_dir)
         end
-        options["output_file_path"] = joinpath(output_dir, "C_API.jl")
+        if !haskey(options, "general")
+            options["general"] = Dict{String,Any}()
+        end
+        options["general"]["output_file_path"] = joinpath(output_dir, "C_API.jl")
         println("Output directory: $output_dir")
     end
 
