@@ -1,47 +1,47 @@
 # cargo_example
 
-Cargoを使用してRustプロジェクトをビルドし、Juliaから実行する例です。
+An example of building and running a Rust project using Cargo from Julia.
 
-## 概要
+## Overview
 
-このサンプルは、Cargoで管理されたRustプロジェクトをJuliaからビルド・実行する方法を示します。
+This sample demonstrates how to build and run a Cargo-managed Rust project from Julia.
 
-## プロジェクト構造
+## Project Structure
 
 ```
 cargo_example/
-├── Cargo.toml    # Rustプロジェクトの設定
-├── Project.toml  # Juliaプロジェクトの設定
-├── run.jl        # 実行スクリプト
+├── Cargo.toml    # Rust project configuration
+├── Project.toml  # Julia project configuration
+├── run.jl        # Execution script
 └── src/
-    └── main.rs   # Rustのメインコード
+    └── main.rs   # Rust main code
 ```
 
-## 使い方
+## Usage
 
-### 実行
+### Running
 
 ```bash
 julia run.jl
 ```
 
-または、Julia REPLから：
+Or from the Julia REPL:
 
 ```julia
 include("run.jl")
 ```
 
-## 動作の仕組み
+## How It Works
 
-1. `RustToolChain.jl`の`cargo()`関数を使用してCargoコマンドを取得
-2. `cargo build --release`でRustプロジェクトをビルド
-3. ビルドされたバイナリを実行
+1. Uses the `cargo()` function from `RustToolChain.jl` to get the Cargo command
+2. Builds the Rust project with `cargo build --release`
+3. Executes the built binary
 
-## 依存関係
+## Dependencies
 
-- `RustToolChain.jl` - Rust toolchainの管理
+- `RustToolChain.jl` - Rust toolchain management
 
-## 関連プロジェクト
+## Related Projects
 
-- `rustc_example/` - rustcを直接使用する例
-- `calcpi-rs/` - より複雑なライブラリプロジェクトの例
+- `rustc_example/` - Example using rustc directly
+- `calcpi-rs/` - Example of a more complex library project
