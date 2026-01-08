@@ -1,6 +1,6 @@
 # deps
 
-The `build.jl` script provides developer-focused support for building the Rust backend required by `CalcPi.jl`. It assumes that the Rust crate `calcpi-rs` is located in the same parent directory as the `CalcPi.jl` package.
+The `build.jl` script provides developer-focused support for building the Rust backend required by `CalcPi.jl`. It assumes that the Rust crate `calcpi-rs` is located in `deps/calcpi-rs` within the `CalcPi.jl` package.
 
 After making changes to the Rust code, it is assumed that you will rebuild the Julia package as follows:
 
@@ -15,7 +15,7 @@ This process will update `src/C_API.jl` and copy the `libcalcpi_rs.dylib` (or th
 
 ## How it works
 
-1. **Detects local Rust crate**: Checks if `../calcpi-rs` directory exists
+1. **Detects local Rust crate**: Checks if `deps/calcpi-rs` directory exists
 2. **Builds Rust library**: Uses `RustToolChain.jl` to run `cargo build --release` in the Rust crate directory
 3. **Copies library**: Copies the built library to `deps/libcalcpi_rs.<ext>`
 4. **Generates C-API bindings**: Runs `utils/generate_C_API.jl` to regenerate `src/C_API.jl`

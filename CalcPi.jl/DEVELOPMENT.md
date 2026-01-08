@@ -28,7 +28,7 @@ CalcPi.jl/
 When you modify the Rust code in `calcpi-rs`:
 
 ```bash
-cd calcpi-rs
+cd CalcPi.jl/deps/calcpi-rs
 # Edit Rust code
 ```
 
@@ -69,7 +69,7 @@ The `prologue.jl` (included in `C_API.jl`) searches for the library in the follo
    - Local build copied by `Pkg.build()`
    - Used during development
 
-2. **`calcpi-rs/target/release/libcalcpi_rs.*`**
+2. **`deps/calcpi-rs/target/release/libcalcpi_rs.*`**
    - Directly built library
    - Fallback when not in `deps/`
 
@@ -94,11 +94,11 @@ If the library is not found:
 
 ```bash
 # 1. Build the Rust library
-cd calcpi-rs
+cd CalcPi.jl/deps/calcpi-rs
 cargo build --release
 
 # 2. Rebuild the Julia package
-cd ../CalcPi.jl
+cd ../..
 julia --project=. deps/build.jl
 ```
 
@@ -111,12 +111,12 @@ To rebuild from a completely clean state:
 rm -rf CalcPi.jl/deps/libcalcpi_rs.*
 
 # 2. Clean build the Rust project
-cd calcpi-rs
+cd CalcPi.jl/deps/calcpi-rs
 cargo clean
 cargo build --release
 
 # 3. Rebuild the Julia package
-cd ../CalcPi.jl
+cd ../..
 julia --project=. deps/build.jl
 ```
 
@@ -135,7 +135,7 @@ julia --project=. deps/build.jl
 
 `deps/build.jl` performs the following:
 
-1. Detect `calcpi-rs` directory
+1. Detect `deps/calcpi-rs` directory
 2. Build Rust library
 3. Copy library to `deps/`
 4. Generate C-API bindings

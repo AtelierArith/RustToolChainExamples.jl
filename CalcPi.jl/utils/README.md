@@ -20,11 +20,11 @@ Based on the mechanism from `SparseIR.jl/utils`, this tool automatically generat
 First, build the Rust library to generate the header file:
 
 ```bash
-cd ../../calcpi-rs
+cd CalcPi.jl/deps/calcpi-rs
 cargo build --release
 ```
 
-This generates `calcpi-rs/include/calcpi.h`.
+This generates `CalcPi.jl/deps/calcpi-rs/include/calcpi.h`.
 
 ### 2. Generating Julia Bindings
 
@@ -35,7 +35,7 @@ cd CalcPi.jl/utils
 julia generate_C_API.jl
 ```
 
-By default, it looks for `../../calcpi-rs`. To specify a different path:
+By default, it looks for `../deps/calcpi-rs`. To specify a different path:
 
 ```bash
 julia generate_C_API.jl --calcpi-rs-dir /path/to/calcpi-rs
@@ -52,7 +52,7 @@ julia generate_C_API.jl --calcpi-rs-dir /path/to/calcpi-rs
 ## Generation Script Behavior
 
 1. **Command-line argument parsing**: Path can be specified with `--calcpi-rs-dir`
-2. **Directory validation**: Checks for the existence of `calcpi-rs/include/calcpi.h`
+2. **Directory validation**: Checks for the existence of `deps/calcpi-rs/include/calcpi.h`
 3. **Parsing with Clang.jl**: Parses the C header
 4. **Julia code generation**: Generates `C_API.jl`
 5. **Prologue insertion**: Adds the contents of `prologue.jl` at the beginning
@@ -82,7 +82,7 @@ Defines the library loading process. It prioritizes local builds and falls back 
 Build the Rust library:
 
 ```bash
-cd calcpi-rs && cargo build --release
+cd CalcPi.jl/deps/calcpi-rs && cargo build --release
 ```
 
 ### Error: CEnum not found
