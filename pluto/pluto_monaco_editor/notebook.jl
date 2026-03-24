@@ -18,7 +18,6 @@ end
 
 # ╔═╡ 07ebdbbe-49bb-4d18-9f2b-14f98d137548
 begin
-    using Pkg
     using PlutoMonacoEditor: MonacoEditor
 	using RustToolChain: rustc
 end
@@ -65,7 +64,6 @@ end
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
-Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 PlutoMonacoEditor = "5e943eae-10d2-4eb3-ad1e-58d3f2e9614f"
 RustToolChain = "e9dc52e2-edb8-4742-9783-5e542d30dbb5"
 
@@ -80,7 +78,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.12.5"
 manifest_format = "2.0"
-project_hash = "c483a6d1ba7d0a6a1a8e5828fc043eefa2683396"
+project_hash = "385599704be878a8a1467b2f318bf9b00cb9f6aa"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
